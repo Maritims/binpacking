@@ -29,7 +29,7 @@ This project has a Jetty-based backend and a Three.js-based frontend which can v
 
 The frontend subscribes to Server Sent Events (SSE) from the backend. The backend can receive payloads via HTTP POST for broadcasting via SSE to all subscribing clients.
 
-Whenever you run the unit tests in `no.clueless.binpacking.three_dimensional.NextFitLayerPackerTest`, the resulting bins are serialized and posted to the backend for broadcasting.
+Whenever you run the unit tests in `no.clueless.binpacking.three_dimensional.NextFitLayerPackerTest`, the resulting bins are serialized and posted to the backend for broadcasting. The subscribed frontends will then update their visualisations.
 
 ### Features
 

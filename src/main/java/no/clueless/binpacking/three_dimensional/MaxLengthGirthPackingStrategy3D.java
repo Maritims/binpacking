@@ -3,8 +3,22 @@ package no.clueless.binpacking.three_dimensional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This strategy dictates that a new bin must be allocated when adding an item to the current bin would result in breaching either the max length or max length + girth.
+ * <p>An example of a freight product with such a constraint is <a href="https://www.bring.no/tjenester/pakker-og-gods/bedrifter-nasjonalt/pakke-til-bedrift">Pakke til bedrift</a> by Bring, which supports max length of 240 cm, and a max length + girth of 360 cm.</p>
+ */
 public class MaxLengthGirthPackingStrategy3D implements PackingStrategy3D {
     private static final Logger log = LoggerFactory.getLogger(MaxLengthGirthPackingStrategy3D.class);
+    private final        double maxLength;
+    private final        double maxLengthAndGirth;
+
+    public MaxLengthGirthPackingStrategy3D(double maxLength, double maxLengthAndGirth) {
+        if (maxLength <= 0 || maxLengthAndGirth <= 0) {
+            throw new IllegalArgumentException("maxLength and maxLengthAndGirth must be positive");
+        }
+        this.maxLength         = maxLength;
+        this.maxLengthAndGirth = maxLengthAndGirth;
+    }
 
     @Override
     public boolean isActionRequired(PlacementContext3D context) {
@@ -31,8 +45,8 @@ public class MaxLengthGirthPackingStrategy3D implements PackingStrategy3D {
         var simulatedSize             = new Size3D(simulatedWidth, simulatedHeight, simulatedDepth);
         var simulatedLongestDimension = simulatedSize.getLongestDimension();
         var simulatedGirth            = simulatedSize.getGirth();
-        var lengthBreached            = simulatedLongestDimension > 240.0d;
-        var lengthGirthBreached       = (simulatedLongestDimension + simulatedGirth) > 360.0d;
+        var lengthBreached            = simulatedLongestDimension > maxLength;
+        var lengthGirthBreached       = (simulatedLongestDimension + simulatedGirth) > maxLengthAndGirth;
 
         if (lengthBreached || lengthGirthBreached) {
             log.info("Shipping regulations breached! Forcing allocation of a new bin.");

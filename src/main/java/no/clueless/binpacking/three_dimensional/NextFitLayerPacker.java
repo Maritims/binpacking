@@ -26,7 +26,7 @@ public class NextFitLayerPacker {
                 context -> context.getItem().getDepth() + context.getCurrentZ() > bounds.getDepth(),
                 context -> {
                     var heightBreached = context.getItem().getHeight() + context.getCurrentY() > bounds.getHeight();
-                    return heightBreached || (enforceShippingRegulations && new MaxLengthGirthPackingStrategy3D().isActionRequired(context));
+                    return heightBreached || (enforceShippingRegulations && new MaxLengthGirthPackingStrategy3D(240.0d, 360.0d).isActionRequired(context));
                 }
         );
     }

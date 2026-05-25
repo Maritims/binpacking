@@ -2,6 +2,13 @@
 
 This library uses binpacking to pack items into bins in 1D, 2D and 3D.
 
+## Prerequisites
+
+- Java 11 or higher
+- Maven
+- Node.js
+- npm
+
 ## Supported algorithms
 
 ### 1D

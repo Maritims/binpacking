@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JettyVisualizer</title>
+    <style>
+        body { margin: 0; background-color: #1a1a1a; overflow: hidden; font-family: sans-serif; }
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+        /* Floating HUD Control Panel Styles */
+        #controls-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            display: flex;
+            gap: 10px; /* Even spacing between action items */
+        }
+        .btn {
+            background-color: #ff4757;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: background 0.2s, transform 0.1s;
+        }
+        /* Secondary color theme for the Reset action to distinguish operations */
+        #reset-cam {
+            background-color: #2f3542;
+        }
+        .btn:hover {
+            filter: brightness(1.2);
+        }
+        .btn:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+<div id="controls-panel">
+    <button id="reset-cam" class="btn">Reset View</button>
+    <button id="shrink-btn" class="btn">Fit Wireframe to Content</button>
+</div>
+
+<canvas id="bg"></canvas>
+<script type="module" src="main.js"></script>
+</body>
+</html>

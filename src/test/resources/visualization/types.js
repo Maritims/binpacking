@@ -27,3 +27,8 @@
  * @property {number} y
  * @property {number} z
  */
+
+/**
+ * @callback OnBinGroupClickedCallback
+ * @return void
+ */

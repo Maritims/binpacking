@@ -43,6 +43,12 @@ Start the suite by running the following commands:
 
 ```shell
 mvn test -Pvisualize -Dtest=NextFitLayerPackerVisualizationTest
+```
+
+```shell
 npm i --prefix src/test/resources/visualization
+```
+
+```shell
 npm run dev --prefix src/test/resources/visualization
 ```

@@ -8,12 +8,13 @@ import {BoxGeometry,EdgesGeometry,Color,Group,LineBasicMaterial,LineSegments,Mes
 let _isShrunk = false;
 
 /**
+ * @param {string} binId
  * @param {Size3D} size
  * @param {Point3D} position
  * @param {Color} color
  * @return {Group}
  */
-function createBox(size, position, color = new Color(0x00ff88)) {
+function createBox(binId, size, position, color = new Color(0x00ff88)) {
     const {width, height, depth} = size;
     const {x, y, z} = position;
     const geometry = new BoxGeometry(width, height, depth);
@@ -23,6 +24,7 @@ function createBox(size, position, color = new Color(0x00ff88)) {
         shininess: 30
     });
     const mesh = new Mesh(geometry, material);
+    mesh.userData.binId = binId;
 
     const edgeGeometry = new EdgesGeometry(geometry);
     const lineMaterial = new LineBasicMaterial({color: 0x000000});
@@ -80,7 +82,7 @@ function createBinGroup(bin, isShrunk = false) {
         const position = {x: item.x, y: item.y, z: item.z};
         const hue = (i * 137.5) % 360;
         const color = new Color(`hsl(${hue}, 75%, 50%)`);
-        const box = createBox(size, position, color);
+        const box = createBox(bin.id, size, position, color);
 
         group.add(box);
     });

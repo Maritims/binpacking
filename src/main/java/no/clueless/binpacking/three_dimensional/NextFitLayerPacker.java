@@ -5,6 +5,7 @@ import no.clueless.binpacking.shared.NonEmptyList;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 public class NextFitLayerPacker {
     private final        Size3D            bounds;
@@ -41,7 +42,7 @@ public class NextFitLayerPacker {
                 .orientations()
                 .stream()
                 .noneMatch(o -> {
-                    var context = new PlacementContext3D(o, new Bin3D(bounds), 0, 0, 0);
+                    var context = new PlacementContext3D(o, new Bin3D(UUID.randomUUID().toString(), bounds), 0, 0, 0);
                     return !horizontalWrapStrategy.isActionRequired(context) && !depthWrapStrategy.isActionRequired(context) && !newBinStrategy.isActionRequired(context);
                 });
     }
@@ -80,7 +81,7 @@ public class NextFitLayerPacker {
     public Optional<NonEmptyList<Bin3D>> pack(NonEmptyList<Item3D> items) {
         items = Objects.requireNonNull(items, "items cannot be null").reverse();
         var bins               = new ArrayList<Bin3D>();
-        var currentBin         = new Bin3D(bounds);
+        var currentBin         = new Bin3D(UUID.randomUUID().toString(), bounds);
         var currentX           = 0.0d;
         var currentY           = 0.0d;
         var currentZ           = 0.0d;
@@ -117,7 +118,7 @@ public class NextFitLayerPacker {
             //if (isNewBinRequired(itemInBestOrientation, currentY)) {
             if (newBinStrategy.isActionRequired(new PlacementContext3D(itemInBestOrientation, currentBin, currentX, currentY, currentZ))) {
                 bins.add(currentBin);
-                currentBin         = new Bin3D(bounds);
+                currentBin         = new Bin3D(UUID.randomUUID().toString(), bounds);
                 currentX           = 0;
                 currentY           = 0;
                 currentZ           = 0;

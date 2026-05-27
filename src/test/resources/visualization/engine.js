@@ -7,7 +7,7 @@ import {
     PerspectiveCamera,
     Scene,
     Vector3,
-    WebGLRenderer
+    WebGLRenderer, Raycaster, Vector2
 } from "three";
 import {OrbitControls} from "three/addons";
 
@@ -103,6 +103,82 @@ export function createEngine(cameraStartingPosition) {
     const controls = createControls(camera, canvas);
     const renderer = createRenderer(canvas);
     const scene = createScene();
+    const raycaster = new Raycaster();
+    const mouse = new Vector2();
+
+    let highlightedObject = null; // <-- Defined here!
+    let originalColor = new Color();
+    const HIGHLIGHT_COLOR = 0x3ae374;
+
+    canvas.addEventListener("click", (event) => {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(state.currentRenderedElements.children, true);
+
+        const panel = document.querySelector("#selected-bin-panel");
+        const idValueSpan = document.querySelector("#bin-id-val");
+        const itemsContainer = document.querySelector("#bin-items-container");
+
+        const clearHighlight = () => {
+            if (highlightedObject && highlightedObject.material) {
+                highlightedObject.material.color.copy(originalColor);
+                highlightedObject = null;
+            }
+        };
+
+        if (intersects.length > 0) {
+            const clickedObject = intersects[0].object;
+            const binId = clickedObject.userData.binId;
+
+            if (binId !== undefined) {
+                if (highlightedObject !== clickedObject) {
+                    clearHighlight();
+
+                    highlightedObject = clickedObject;
+                    if (clickedObject.material && clickedObject.material.color) {
+                        originalColor.copy(clickedObject.material.color);
+                        clickedObject.material.color.setHex(HIGHLIGHT_COLOR);
+                    }
+                }
+
+                // Update Bin Main Display ID
+                idValueSpan.textContent = binId;
+
+                // Find the matching bin object data in our state array
+                const targetBin = state.currentBins.find(b => b.id === binId);
+
+                // Clear out old element markup string entries
+                itemsContainer.innerHTML = "";
+
+                if (targetBin && targetBin.items && targetBin.items.length > 0) {
+                    // Map items layout into custom innerHTML templates
+                    targetBin.items.forEach(item => {
+                        const itemElement = document.createElement("div");
+                        itemElement.className = "item-node";
+                        itemElement.innerHTML = `
+                            <div class="item-title">${item.id || 'Unnamed Item'}</div>
+                            <div class="item-details">Size: ${item.width}x${item.height}x${item.depth}</div>
+                            <div class="item-details">Pos: [${item.x}, ${item.y}, ${item.z}]</div>
+                        `;
+                        itemsContainer.appendChild(itemElement);
+                    });
+                } else {
+                    itemsContainer.innerHTML = `<div style="font-size:12px; color:#a4b0be; font-style:italic;">No items inside.</div>`;
+                }
+
+                panel.classList.add("visible");
+            } else {
+                clearHighlight();
+                panel.classList.remove("visible");
+            }
+        } else {
+            clearHighlight();
+            panel.classList.remove("visible");
+        }
+    });
 
     canvas.addEventListener("wheel", (event) => {
         event.preventDefault();

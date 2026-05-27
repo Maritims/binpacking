@@ -17,6 +17,7 @@
 
 /**
  * @typedef {Object} Bin3D
+ * @property {string} id
  * @property {Size3D} bounds
  * @property {Cuboid[]} items
  */

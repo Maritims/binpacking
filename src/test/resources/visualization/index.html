@@ -18,7 +18,75 @@
             left: 20px;
             z-index: 10;
             display: flex;
-            gap: 10px; /* Even spacing between action items */
+            gap: 10px;
+        }
+        /* Selected Bin Panel Styles */
+        #selected-bin-panel {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+            z-index: 10;
+            background-color: rgba(47, 53, 66, 0.85);
+            backdrop-filter: blur(4px);
+            color: white;
+            padding: 15px;
+            border-radius: 6px;
+            width: 260px; /* Slightly widened to fit position coordinates neatly */
+            max-height: 70vh; /* Prevents long lists from running off screen */
+            overflow-y: auto; /* Adds a scrollbar if there are lots of items */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            border-left: 4px solid #ff4757;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        #selected-bin-panel.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        #selected-bin-panel h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #ff4757;
+        }
+        .info-row {
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+        .info-label {
+            color: #a4b0be;
+            font-weight: bold;
+        }
+        /* Styling for the nested Item List */
+        .items-header {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #ff4757;
+            margin: 12px 0 6px 0;
+            border-top: 1px solid #485460;
+            padding-top: 8px;
+            font-weight: bold;
+        }
+        .item-node {
+            background: rgba(30, 30, 30, 0.6);
+            padding: 6px 8px;
+            border-radius: 4px;
+            margin-bottom: 6px;
+            font-size: 12px;
+            border-left: 2px solid #535c68;
+        }
+        .item-title {
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 2px;
+        }
+        .item-details {
+            color: #ced6e0;
+            font-family: monospace;
         }
         .btn {
             background-color: #ff4757;
@@ -32,7 +100,6 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
             transition: background 0.2s, transform 0.1s;
         }
-        /* Secondary color theme for the Reset action to distinguish operations */
         #reset-cam {
             background-color: #2f3542;
         }
@@ -48,6 +115,15 @@
 <div id="controls-panel">
     <button id="reset-cam" class="btn">Reset View</button>
     <button id="shrink-btn" class="btn">Fit Wireframe to Content</button>
+</div>
+
+<div id="selected-bin-panel">
+    <h3>Selected Bin</h3>
+    <div class="info-row"><span class="info-label">ID:</span> <span id="bin-id-val">-</span></div>
+
+    <div class="items-header">Packed Items</div>
+    <div id="bin-items-container">
+    </div>
 </div>
 
 <canvas id="bg"></canvas>

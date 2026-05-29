@@ -8,8 +8,14 @@ public class Size3D {
     private final double depth;
 
     public Size3D(double width, double height, double depth) {
-        if (width <= 0 || height <= 0 || depth <= 0) {
-            throw new IllegalArgumentException("width, height and depth must be positive");
+        if (width <= 0) {
+            throw new IllegalArgumentException("width must be positive, but was " + width);
+        }
+        if (height <= 0) {
+            throw new IllegalArgumentException("height must be positive, but was " + height);
+        }
+        if(depth <= 0) {
+            throw new IllegalArgumentException("depth must be positive, but was " + depth);
         }
         this.width  = width;
         this.height = height;

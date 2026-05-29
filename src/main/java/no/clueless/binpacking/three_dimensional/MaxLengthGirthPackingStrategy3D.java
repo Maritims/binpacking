@@ -39,7 +39,7 @@ public class MaxLengthGirthPackingStrategy3D implements PackingStrategy3D {
             maxZ = Math.max(maxZ, cuboid.z2());
         }
 
-        var simulatedWidth            = maxX - minY;
+        var simulatedWidth            = maxX - minX;
         var simulatedHeight           = maxY - minY;
         var simulatedDepth            = maxZ - minZ;
         var simulatedSize             = new Size3D(simulatedWidth, simulatedHeight, simulatedDepth);

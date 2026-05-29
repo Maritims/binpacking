@@ -29,8 +29,7 @@ public class BestFitPacker {
                 }
 
                 if (orientation.getWidth() <= pocket.getSize().getWidth() && orientation.getHeight() <= pocket.getSize().getHeight() && orientation.getDepth() <= pocket.getSize().getDepth()) {
-                    var wastedWidth = pocket.getSize().getWidth() - orientation.getWidth();
-                    var challenger  = new ScoredPlacement(binPackingState, pocket, orientation, wastedWidth);
+                    var challenger  = new ScoredPlacement(binPackingState, pocket, orientation);
 
                     if (bestPlacement == null || challenger.compareTo(bestPlacement) < 0) {
                         bestPlacement = challenger;

@@ -8,13 +8,13 @@ class ScoredPlacement implements Comparable<ScoredPlacement> {
     private final BinPackingState state;
     private final Pocket3D        pocket;
     private final Item3D          orientation;
-    private final double          wastedWidth;
+    private final double          score;
 
-    ScoredPlacement(BinPackingState state, Pocket3D pocket, Item3D orientation, double wastedWidth) {
+    ScoredPlacement(BinPackingState state, Pocket3D pocket, Item3D orientation) {
         this.state       = Objects.requireNonNull(state, "state must not be null");
         this.pocket      = Objects.requireNonNull(pocket, "pocket must not be null");
-        this.orientation = Objects.requireNonNull(orientation, "orientation cannot be null");
-        this.wastedWidth = wastedWidth;
+        this.orientation = Objects.requireNonNull(orientation, "orientation must not be null");
+        this.score       = calculateDistanceScore();
     }
 
     BinPackingState getState() {
@@ -29,20 +29,33 @@ class ScoredPlacement implements Comparable<ScoredPlacement> {
         return orientation;
     }
 
-    double getWastedWidth() {
-        return wastedWidth;
+    double getScore() {
+        return score;
+    }
+
+    /**
+     * Calculates the Euclidean distance vector from the origin (0,0,0)
+     * to the furthest corner of the item if placed in this pocket.
+     */
+    private double calculateDistanceScore() {
+        double farX = pocket.getPosition().getX() + orientation.getWidth();
+        double farY = pocket.getPosition().getY() + orientation.getHeight();
+        double farZ = pocket.getPosition().getZ() + orientation.getDepth();
+
+        // Standard Euclidean distance: √(x² + y² + z²)
+        return Math.sqrt((farX * farX) + (farY * farY) + (farZ * farZ));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         ScoredPlacement that = (ScoredPlacement) o;
-        return Double.compare(wastedWidth, that.wastedWidth) == 0 && Objects.equals(state, that.state) && Objects.equals(pocket, that.pocket) && orientation == that.orientation;
+        return Double.compare(score, that.score) == 0 && Objects.equals(state, that.state) && Objects.equals(pocket, that.pocket) && orientation == that.orientation;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(state, pocket, orientation, wastedWidth);
+        return Objects.hash(state, pocket, orientation, score);
     }
 
     @Override
@@ -51,31 +64,12 @@ class ScoredPlacement implements Comparable<ScoredPlacement> {
                 "state=" + state +
                 ", pocket=" + pocket +
                 ", orientation=" + orientation +
-                ", wastedWidth=" + wastedWidth +
+                ", wastedWidth=" + score +
                 '}';
     }
 
     @Override
     public int compareTo(ScoredPlacement o) {
-        // 1. Primary score: Minimize horizontal wasted width
-        int widthCompare = Double.compare(this.wastedWidth, o.wastedWidth);
-        if (widthCompare != 0) {
-            return widthCompare;
-        }
-
-        // 2. Secondary tie-breaker: Prioritize CURRENT_ROW over other types
-        var thisType = this.pocket.getType();
-        var otherType = o.pocket.getType();
-        if (thisType == Pocket3D.PocketType.CURRENT_ROW && otherType != Pocket3D.PocketType.CURRENT_ROW) return -1;
-        if (otherType == Pocket3D.PocketType.CURRENT_ROW && thisType != Pocket3D.PocketType.CURRENT_ROW) return 1;
-
-        // 3. Tertiary tie-breaker: If pocket types match, minimize wasted vertical headroom
-        if (thisType == otherType) {
-            var thisWastedHeight = this.pocket.getSize().getHeight() - this.orientation.getHeight();
-            var otherWastedHeight = o.pocket.getSize().getHeight() - o.orientation.getHeight();
-            return Double.compare(thisWastedHeight, otherWastedHeight);
-        }
-
-        return 0;
+        return Double.compare(score, o.score);
     }
 }

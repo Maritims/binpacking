@@ -31,8 +31,8 @@ class NextFitLayerPackerTest {
                 new Item3D(60, 1, 60),
                 new Item3D(60, 1, 60),
                 new Item3D(60, 1, 60),
-                new Item3D(60, 1, 60)
-                /*new Item3D(60, 60, 2),
+                new Item3D(60, 1, 60),
+                new Item3D(60, 60, 2),
                 new Item3D(100, 10, 2),
                 new Item3D(100, 10, 2),
                 new Item3D(100, 10, 2),
@@ -44,7 +44,7 @@ class NextFitLayerPackerTest {
                 new Item3D(100, 100, 2),
                 new Item3D(100, 100, 2),
                 new Item3D(93, 40, 37),
-                new Item3D(120, 90, 30)*/
+                new Item3D(120, 90, 30)
         ).collect(NonEmptyList.collector());
 
         // act

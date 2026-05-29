@@ -2,6 +2,8 @@ package no.clueless.binpacking.three_dimensional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import no.clueless.binpacking.shared.NonEmptyList;
+import no.clueless.binpacking.three_dimensional.shared.Bin3D;
+import no.clueless.binpacking.three_dimensional.shared.Size3D;
 import no.clueless.binpacking.visualization.JettyVisualizer;
 import org.junit.jupiter.api.Test;
 

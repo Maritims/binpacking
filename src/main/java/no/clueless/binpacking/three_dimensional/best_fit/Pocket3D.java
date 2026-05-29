@@ -1,8 +1,11 @@
-package no.clueless.binpacking.three_dimensional;
+package no.clueless.binpacking.three_dimensional.best_fit;
+
+import no.clueless.binpacking.three_dimensional.shared.Point3D;
+import no.clueless.binpacking.three_dimensional.shared.Size3D;
 
 import java.util.Objects;
 
-public class Pocket3D {
+class Pocket3D {
     private final Point3D    position;
     private final Size3D     size;
     private final PocketType type;
@@ -15,7 +18,7 @@ public class Pocket3D {
         NEW_SHELF
     }
 
-    public Pocket3D(Point3D position, Size3D size, PocketType type, double localRowDepth, double localShelfHeight) {
+    Pocket3D(Point3D position, Size3D size, PocketType type, double localRowDepth, double localShelfHeight) {
         this.position         = Objects.requireNonNull(position, "position cannot be null");
         this.size             = Objects.requireNonNull(size, "size cannot be null");
         this.type             = Objects.requireNonNull(type, "type cannot be null");
@@ -23,23 +26,23 @@ public class Pocket3D {
         this.localShelfHeight = localShelfHeight;
     }
 
-    public Point3D getPosition() {
+    Point3D getPosition() {
         return position;
     }
 
-    public Size3D getSize() {
+    Size3D getSize() {
         return size;
     }
 
-    public PocketType getType() {
+    PocketType getType() {
         return type;
     }
 
-    public double getLocalRowDepth() {
+    double getLocalRowDepth() {
         return localRowDepth;
     }
 
-    public double getLocalShelfHeight() {
+    double getLocalShelfHeight() {
         return localShelfHeight;
     }
 

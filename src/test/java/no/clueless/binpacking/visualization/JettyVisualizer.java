@@ -6,7 +6,7 @@ import jakarta.servlet.AsyncContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import no.clueless.binpacking.shared.NonEmptyList;
-import no.clueless.binpacking.three_dimensional.Bin3D;
+import no.clueless.binpacking.three_dimensional.shared.Bin3D;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AbstractHandler;

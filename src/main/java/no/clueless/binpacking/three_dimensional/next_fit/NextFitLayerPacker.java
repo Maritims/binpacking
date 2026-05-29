@@ -1,6 +1,7 @@
-package no.clueless.binpacking.three_dimensional;
+package no.clueless.binpacking.three_dimensional.next_fit;
 
 import no.clueless.binpacking.shared.NonEmptyList;
+import no.clueless.binpacking.three_dimensional.shared.*;
 
 import java.util.*;
 

@@ -1,7 +1,7 @@
 package no.clueless.binpacking.three_dimensional.best_fit;
 
 import no.clueless.binpacking.shared.NonEmptyList;
-import no.clueless.binpacking.three_dimensional.*;
+import no.clueless.binpacking.three_dimensional.shared.*;
 
 import java.util.*;
 import java.util.stream.Collectors;

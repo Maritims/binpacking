@@ -1,6 +1,6 @@
 package no.clueless.binpacking.three_dimensional.best_fit;
 
-import no.clueless.binpacking.three_dimensional.*;
+import no.clueless.binpacking.three_dimensional.shared.*;
 
 import java.util.ArrayList;
 import java.util.List;

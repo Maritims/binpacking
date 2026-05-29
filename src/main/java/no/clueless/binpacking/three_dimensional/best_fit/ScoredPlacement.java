@@ -1,7 +1,6 @@
 package no.clueless.binpacking.three_dimensional.best_fit;
 
-import no.clueless.binpacking.three_dimensional.Item3D;
-import no.clueless.binpacking.three_dimensional.Pocket3D;
+import no.clueless.binpacking.three_dimensional.shared.Item3D;
 
 import java.util.Objects;
 
@@ -18,19 +17,19 @@ class ScoredPlacement implements Comparable<ScoredPlacement> {
         this.wastedWidth = wastedWidth;
     }
 
-    public BinPackingState getState() {
+    BinPackingState getState() {
         return state;
     }
 
-    public Pocket3D getPocket() {
+    Pocket3D getPocket() {
         return pocket;
     }
 
-    public Item3D getOrientation() {
+    Item3D getOrientation() {
         return orientation;
     }
 
-    public double getWastedWidth() {
+    double getWastedWidth() {
         return wastedWidth;
     }
 

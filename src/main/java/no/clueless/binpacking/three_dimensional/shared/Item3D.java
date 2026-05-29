@@ -1,4 +1,4 @@
-package no.clueless.binpacking.three_dimensional;
+package no.clueless.binpacking.three_dimensional.shared;
 
 import java.util.List;
 import java.util.Objects;

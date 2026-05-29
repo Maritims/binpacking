@@ -1,4 +1,4 @@
-package no.clueless.binpacking.three_dimensional;
+package no.clueless.binpacking.three_dimensional.shared;
 
 @FunctionalInterface
 public interface PackingStrategy3D {

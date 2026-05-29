@@ -2,6 +2,10 @@ package no.clueless.binpacking.three_dimensional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.clueless.binpacking.shared.NonEmptyList;
+import no.clueless.binpacking.three_dimensional.next_fit.NextFitLayerPacker;
+import no.clueless.binpacking.three_dimensional.shared.Item3D;
+import no.clueless.binpacking.three_dimensional.shared.MaxLengthGirthPackingStrategy3D;
+import no.clueless.binpacking.three_dimensional.shared.Size3D;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

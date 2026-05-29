@@ -21,7 +21,8 @@ This library uses binpacking to pack items into bins in 1D, 2D and 3D.
 
 ### 3D
 
-- First-fit-decreasing layer packing with custom constraints, such as forcing new bin allocation when the next item breaches a certain length or combination of length and girth.
+- First-fit-decreasing layer packing with custom packing strategies, such as forcing new bin allocation when the next item breaches a certain length or combination of length and girth.
+- Best-fit layer packing with custom packing strategies, such as forcing new bin allocation when the next item breaches a certain length or combination of length and girth.
 
 ## Visualisation suite
 

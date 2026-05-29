@@ -2,39 +2,39 @@ package no.clueless.binpacking.three_dimensional;
 
 import no.clueless.binpacking.shared.NonEmptyList;
 
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class NextFitLayerPacker {
-    private final        Size3D            bounds;
-    private final        PackingStrategy3D horizontalWrapStrategy;
-    private final        PackingStrategy3D depthWrapStrategy;
-    private final        PackingStrategy3D newBinStrategy;
+    private final Size3D                  bounds;
+    private final List<PackingStrategy3D> additionalHorizontalWrapStrategies;
+    private final List<PackingStrategy3D> additionalDepthWrapStrategies;
+    private final List<PackingStrategy3D> additionalNewBinStrategies;
 
-    public NextFitLayerPacker(Size3D bounds, PackingStrategy3D horizontalWrapStrategy, PackingStrategy3D depthWrapStrategy, PackingStrategy3D newBinStrategy) {
-        this.bounds                 = Objects.requireNonNull(bounds, "bounds cannot be null");
-        this.horizontalWrapStrategy = Objects.requireNonNull(horizontalWrapStrategy, "horizontalWrapStrategy cannot be null");
-        this.depthWrapStrategy      = Objects.requireNonNull(depthWrapStrategy, "depthWrapStrategy cannot be null");
-        this.newBinStrategy         = Objects.requireNonNull(newBinStrategy, "newBinStrategy cannot be null");
-    }
-
-    public NextFitLayerPacker(Size3D bounds, boolean enforceShippingRegulations) {
-        this(
-                bounds,
-                context -> context.getItem().getWidth() + context.getCurrentX() > bounds.getWidth(),
-                context -> context.getItem().getDepth() + context.getCurrentZ() > bounds.getDepth(),
-                context -> {
-                    var heightBreached = context.getItem().getHeight() + context.getCurrentY() > bounds.getHeight();
-                    return heightBreached || (enforceShippingRegulations && new MaxLengthGirthPackingStrategy3D(240.0d, 360.0d).isActionRequired(context));
-                }
-        );
+    public NextFitLayerPacker(Size3D bounds, List<PackingStrategy3D> additionalHorizontalWrapStrategies, List<PackingStrategy3D> additionalDepthWrapStrategies, List<PackingStrategy3D> additionalNewBinStrategies) {
+        this.bounds                             = Objects.requireNonNull(bounds, "bounds cannot be null");
+        this.additionalHorizontalWrapStrategies = additionalHorizontalWrapStrategies == null ? new ArrayList<>() : new ArrayList<>(additionalHorizontalWrapStrategies);
+        this.additionalDepthWrapStrategies      = additionalDepthWrapStrategies == null ? new ArrayList<>() : new ArrayList<>(additionalDepthWrapStrategies);
+        this.additionalNewBinStrategies         = additionalNewBinStrategies == null ? new ArrayList<>() : new ArrayList<>(additionalNewBinStrategies);
     }
 
     @SuppressWarnings("unused")
     public NextFitLayerPacker(Size3D bounds) {
-        this(bounds, false);
+        this(bounds, null, null, null);
+    }
+
+    boolean isHorizontalWrapRequired(PlacementContext3D context) {
+        Objects.requireNonNull(context, "context cannot be null");
+        return context.getItem().getWidth() + context.getCurrentX() > bounds.getWidth() || additionalHorizontalWrapStrategies.stream().anyMatch(additionalHorizontalWrapStrategy -> additionalHorizontalWrapStrategy.isActionRequired(context));
+    }
+
+    boolean isDepthWrapRequired(PlacementContext3D context) {
+        Objects.requireNonNull(context, "context cannot be null");
+        return context.getItem().getDepth() + context.getCurrentZ() > bounds.getDepth() || additionalDepthWrapStrategies.stream().anyMatch(additionalDepthWrapStrategy -> additionalDepthWrapStrategy.isActionRequired(context));
+    }
+
+    boolean isNewBinRequired(PlacementContext3D context) {
+        Objects.requireNonNull(context, "context cannot be null");
+        return context.getItem().getHeight() + context.getCurrentY() > bounds.getHeight() || additionalNewBinStrategies.stream().anyMatch(additionalNewBinStrategy -> additionalNewBinStrategy.isActionRequired(context));
     }
 
     boolean willNeverFit(Item3D item) {
@@ -43,7 +43,7 @@ public class NextFitLayerPacker {
                 .stream()
                 .noneMatch(o -> {
                     var context = new PlacementContext3D(o, new Bin3D(UUID.randomUUID().toString(), bounds), 0, 0, 0);
-                    return !horizontalWrapStrategy.isActionRequired(context) && !depthWrapStrategy.isActionRequired(context) && !newBinStrategy.isActionRequired(context);
+                    return !isHorizontalWrapRequired(context) && !isDepthWrapRequired(context) && !isNewBinRequired(context);
                 });
     }
 
@@ -58,9 +58,7 @@ public class NextFitLayerPacker {
 
         for (var orientation : item.orientations()) {
             var context = new PlacementContext3D(orientation, currentBin, currentX, currentY, currentZ);
-            var fits = !horizontalWrapStrategy.isActionRequired(context) &&
-                    !depthWrapStrategy.isActionRequired(context) &&
-                    !newBinStrategy.isActionRequired(context);
+            var fits    = !isHorizontalWrapRequired(context) && !isDepthWrapRequired(context) && !isNewBinRequired(context);
 
             if (fits) {
                 if (best == null) {
@@ -96,7 +94,7 @@ public class NextFitLayerPacker {
             var itemInBestOrientation = bestOrientation(originalItem, currentBin, currentX, currentY, currentZ);
 
             //if (isHorizontalWrappingRequired(itemInBestOrientation, currentX)) {
-            if (horizontalWrapStrategy.isActionRequired(new PlacementContext3D(itemInBestOrientation, currentBin, currentX, currentY, currentZ))) {
+            if (isHorizontalWrapRequired(new PlacementContext3D(itemInBestOrientation, currentBin, currentX, currentY, currentZ))) {
                 currentZ += currentRowDepth;
                 currentX        = 0;
                 currentRowDepth = 0;
@@ -105,7 +103,7 @@ public class NextFitLayerPacker {
             }
 
             //if (isDepthWrappingRequired(itemInBestOrientation, currentZ)) {
-            if (depthWrapStrategy.isActionRequired(new PlacementContext3D(itemInBestOrientation, currentBin, currentX, currentY, currentZ))) {
+            if (isDepthWrapRequired(new PlacementContext3D(itemInBestOrientation, currentBin, currentX, currentY, currentZ))) {
                 currentY += currentLayerHeight;
                 currentX           = 0;
                 currentZ           = 0;
@@ -116,7 +114,7 @@ public class NextFitLayerPacker {
             }
 
             //if (isNewBinRequired(itemInBestOrientation, currentY)) {
-            if (newBinStrategy.isActionRequired(new PlacementContext3D(itemInBestOrientation, currentBin, currentX, currentY, currentZ))) {
+            if (isNewBinRequired(new PlacementContext3D(itemInBestOrientation, currentBin, currentX, currentY, currentZ))) {
                 bins.add(currentBin);
                 currentBin         = new Bin3D(UUID.randomUUID().toString(), bounds);
                 currentX           = 0;

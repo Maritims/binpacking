@@ -9,6 +9,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,7 +21,7 @@ class NextFitLayerPackerTest {
     @Test
     void pack() throws IOException, InterruptedException {
         // arrange
-        var sut = new NextFitLayerPacker(new Size3D(360, 360, 360), true);
+        var sut = new NextFitLayerPacker(new Size3D(360, 360, 360), null, null, List.of(new MaxLengthGirthPackingStrategy3D(240, 360)));
         var items = Stream.of(
                 new Item3D(60, 60, 2),
                 new Item3D(100, 10, 2),
